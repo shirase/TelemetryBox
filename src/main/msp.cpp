@@ -89,3 +89,12 @@ void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
         mavlinkWP(wp_no, action, lat, lon, alt);
     }
 }
+
+void mspTask(void * parameter)
+{
+    for( ;; ) {
+        //getWaypointCount();
+        
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}

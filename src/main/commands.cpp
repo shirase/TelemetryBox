@@ -16,7 +16,7 @@ void sendMavlink(mavlink_message_t* msg)
   uint16_t len = mavlink_msg_to_send_buffer(buf, msg);
 
   // Send the message
-  Serial.write(buf, len);
+  //Serial.write(buf, len);
 
   mavlinkPort.writeBuf(mavlinkPort.port, buf, len);
 
