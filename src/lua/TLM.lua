@@ -100,22 +100,23 @@ end
 
 local function serialWriteCrossfire(command, data)
     serialWrite('\0')
-    local l = #data + 2;
+    local l = #data + 2
     serialWrite(string.char(l))
     serialWrite(string.char(command))
+
+    local crc = {command}
 
     if (#data > 0) then
         for i = 1, #data do
             serialWrite(string.char(data[i]))
         end
+
+        for j = 1, #data do
+            crc[j + 1] = data[j]
+        end
     end
 
-    local t = {command}
-    for j = 1, #data do
-        t[j + 1] = data[j]
-    end
-
-    serialWrite(string.char(crc8(t)))
+    serialWrite(string.char(crc8(crc)))
 end
 
 local function int2bytes( value, size )
@@ -152,15 +153,17 @@ local function readCrossfire(byte)
     end
 end
 
+local RAD = 0.01745329251994329576923690768489
+
 local function run()
-    local res = crossfireTelemetryPop()
-    if 0 then
-        local command, data = unpack(res)
-        serialWrite(string.char(command))
-        --serialWriteCrossfire(command, data)
+    local command, data = crossfireTelemetryPop()
+    if command then
+        serialWriteCrossfire(command, data)
     else
         local gps = getValue('GPS')
         local altitude = getValue('Alt')
+        local hdg = getValue('Hdg')
+        local sats = getValue('Sats')
 
         local frame = {}
         local bytes
@@ -175,17 +178,57 @@ local function run()
             frame[#frame + 1] = bytes[i]
         end
 
+        -- speed
         frame[#frame + 1] = 0x00
         frame[#frame + 1] = 0x00
 
-        int2bytes(altitude + 1000, 2)
+        -- heading
+        bytes = int2bytes(hdg, 2)
         for i = 1, #bytes do
             frame[#frame + 1] = bytes[i]
         end
 
-        frame[#frame + 1] = 0x00
+        -- altitude
+        bytes = int2bytes(altitude + 1000, 2)
+        for i = 1, #bytes do
+            frame[#frame + 1] = bytes[i]
+        end
+
+        -- sats
+        bytes = int2bytes(sats, 1)
+        for i = 1, #bytes do
+            frame[#frame + 1] = bytes[i]
+        end
 
         serialWriteCrossfire(0x02, frame)
+
+        local pitch = getValue('Ptch')
+        pitch = pitch * RAD * 10000
+
+        local roll = getValue('Roll')
+        roll = roll * RAD * 10000
+
+        local yaw = getValue('Yaw')
+        yaw = yaw * RAD * 10000
+
+        local frame2 = {}
+
+        bytes = int2bytes(pitch, 2)
+        for i = 1, #bytes do
+            frame2[#frame2 + 1] = bytes[i]
+        end
+
+        bytes = int2bytes(roll, 2)
+        for i = 1, #bytes do
+            frame2[#frame2 + 1] = bytes[i]
+        end
+
+        bytes = int2bytes(yaw, 2)
+        for i = 1, #bytes do
+            frame2[#frame2 + 1] = bytes[i]
+        end
+
+        serialWriteCrossfire(0x1E, frame2)
     end
 
     --[[local str = serialRead()
@@ -193,9 +236,9 @@ local function run()
         local bytes = string.byte(str, 1, #str)
         for i = 1, #bytes do
             if readCrossfire(bytes[i]) then
-                local t = {};
+                local t = {}
                 for j = 4, #CrossfirePacket - 1 do
-                    t[j - 3] = CrossfirePacket[j];
+                    t[j - 3] = CrossfirePacket[j]
                 end
                 crossfireTelemetryPush(CrossfirePacket[3], t)
             end

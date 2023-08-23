@@ -214,7 +214,7 @@ void crsfReadByte(uint8_t byte)
 {
     static uint8_t position = 0;
 
-    Serial.write(byte);
+    //Serial.write(byte);
 
     switch (crsfReadState)
     {
@@ -257,7 +257,7 @@ void crsfReadByte(uint8_t byte)
             position = 0;
 
             if (crc == frameCrc) {
-                Serial.write(crsfFrame.bytes, crsfFrame.frame.frameLength + CRSF_FRAME_LENGTH_NOT_COUNTED_BYTES);
+                //Serial.write(crsfFrame.bytes, crsfFrame.frame.frameLength + CRSF_FRAME_LENGTH_NOT_COUNTED_BYTES);
                 crsfParse();
             }
         }

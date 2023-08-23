@@ -10,6 +10,7 @@
 
 void setup() {
   Serial.begin(9600);
+  //Serial.begin(115200);
 
 #ifdef USE_BLUETOOTH
   bluetoothInit();
