@@ -231,7 +231,7 @@ local function run()
         serialWriteCrossfire(0x1E, frame2)
     end
 
-    --[[local str = serialRead()
+    local str = serialRead()
     if str then
         local bytes = string.byte(str, 1, #str)
         for i = 1, #bytes do
@@ -243,7 +243,7 @@ local function run()
                 crossfireTelemetryPush(CrossfirePacket[3], t)
             end
         end
-    end]]--
+    end
 end
 
 return {run=run}
