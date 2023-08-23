@@ -39,7 +39,7 @@ void setup() {
   xTaskCreate(
     crsfTask,
     "crsfTask",
-    configMINIMAL_STACK_SIZE * 4,
+    configMINIMAL_STACK_SIZE * 16,
     NULL,
     5,
     NULL
@@ -48,7 +48,7 @@ void setup() {
   xTaskCreate(
     mavlinkTask,
     "mavlinkTask",
-    configMINIMAL_STACK_SIZE * 4,
+    configMINIMAL_STACK_SIZE * 16,
     NULL,
     5,
     NULL
@@ -57,7 +57,7 @@ void setup() {
   xTaskCreate(
     telemetryTask,
     "telemetryTask",
-    configMINIMAL_STACK_SIZE * 4,
+    configMINIMAL_STACK_SIZE * 16,
     NULL,
     5,
     NULL

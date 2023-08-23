@@ -6,7 +6,8 @@
 // Telemetry message rate in Hz
 //Default: 10hz
 //Maximum: 40hz (depending on what additional processing is being done)
-#define TELEMETRY_HZ 10
+//#define TELEMETRY_HZ 10
+#define TELEMETRY_HZ 1
 
 uint16_t wait = 1000/TELEMETRY_HZ;
 

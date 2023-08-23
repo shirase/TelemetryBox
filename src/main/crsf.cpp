@@ -121,7 +121,7 @@ void crsfParse()
     {
     case CRSF_FRAMETYPE_MSP_RESP:
         {
-            Serial.write("CRSF_FRAMETYPE_MSP_RESP");
+            //Serial.write("CRSF_FRAMETYPE_MSP_RESP");
 
             uint8_t *mspStart = crsfFrame.frame.payload + CRSF_FRAME_PAYLOAD_EXT_HEADER_SIZE;
             const uint8_t mspHeader = *mspStart;
@@ -214,10 +214,12 @@ void crsfReadByte(uint8_t byte)
 {
     static uint8_t position = 0;
 
+    Serial.write(byte);
+
     switch (crsfReadState)
     {
     case CRSF_READ_STATE_IDLE:
-        if (byte == CRSF_ADDRESS_RADIO_TRANSMITTER/* || byte == CRSF_SYNC_BYTE || byte == CRSF_ADDRESS_BROADCAST*/) {
+        if (byte == CRSF_ADDRESS_RADIO_TRANSMITTER || byte == CRSF_SYNC_BYTE || byte == CRSF_ADDRESS_BROADCAST) {
             position = 0;
             crsfFrame.bytes[position++] = byte;
 
@@ -255,7 +257,7 @@ void crsfReadByte(uint8_t byte)
             position = 0;
 
             if (crc == frameCrc) {
-                //Serial.write(crsfFrame.bytes, crsfFrame.frame.frameLength + CRSF_FRAME_LENGTH_NOT_COUNTED_BYTES);
+                Serial.write(crsfFrame.bytes, crsfFrame.frame.frameLength + CRSF_FRAME_LENGTH_NOT_COUNTED_BYTES);
                 crsfParse();
             }
         }
