@@ -231,7 +231,7 @@ local function run()
         serialWriteCrossfire(0x1E, frame)
     end
 
-    local str = serialRead(64)
+    local str = serialRead()
     if #str > 0 then
         local debug = int2bytes(#str, 4)
         serialWriteCrossfire(0x7E, debug)
