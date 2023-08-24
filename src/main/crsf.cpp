@@ -78,6 +78,8 @@ typedef enum
     CRSF_FRAMETYPE_MSP_WRITE = 0x7C, // write with 8 byte chunked binary (OpenTX outbound telemetry buffer limit)
     // Ardupilot frames
     CRSF_FRAMETYPE_ARDUPILOT_RESP = 0x80,
+
+    CRSF_FRAMETYPE_DEBUG = 0x7E
 } crsf_frame_type_e;
 
 typedef struct crsfFrameDef_s {
@@ -202,6 +204,14 @@ void crsfParse()
             pitch = -(pitch100 / 100);
             roll = roll100 / 100;
             yaw = yaw100 / 100;
+        }
+        break;
+
+    case CRSF_FRAMETYPE_DEBUG:
+        {
+            Serial.write(CRSF_FRAMETYPE_DEBUG);
+            uint8_t *payload = crsfFrame.frame.payload;
+            Serial.write(payload, crsfFrame.frame.frameLength - 2);
         }
         break;
     
