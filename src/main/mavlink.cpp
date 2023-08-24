@@ -133,8 +133,16 @@ bool handleIncoming_MISSION_REQUEST(void)
 
 void mavlinkReadByte(uint8_t byte)
 {
+    //Serial.write(byte);
     uint8_t result = mavlink_parse_char(0, byte, &mavRecvMsg, &mavRecvStatus);
     if (result == MAVLINK_FRAMING_OK) {
+        /*uint32_t msgid = mavRecvMsg.msgid;
+        if (msgid != MAVLINK_MSG_ID_HEARTBEAT) {
+            uint8_t buf[128];
+            uint8_t buf_s = snprintf((char*)buf, sizeof buf, "%i ", msgid);
+            Serial.write(buf, buf_s);
+        }*/
+        
         switch (mavRecvMsg.msgid) {
             case MAVLINK_MSG_ID_HEARTBEAT:
                 break;

@@ -2,7 +2,7 @@
 
 #include "driver/uart.h"
 
-//#define USE_BLUETOOTH
+#define USE_BLUETOOTH
 
 #define CRSF_UART UART_NUM_2
 #define CRSF_UART_RX_PIN (GPIO_NUM_16)

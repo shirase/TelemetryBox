@@ -211,31 +211,30 @@ local function run()
         local yaw = getValue('Yaw')
         yaw = yaw * RAD * 10000
 
-        local frame2 = {}
+        frame = {}
 
         bytes = int2bytes(pitch, 2)
         for i = 1, #bytes do
-            frame2[#frame2 + 1] = bytes[i]
+            frame[#frame + 1] = bytes[i]
         end
 
         bytes = int2bytes(roll, 2)
         for i = 1, #bytes do
-            frame2[#frame2 + 1] = bytes[i]
+            frame[#frame + 1] = bytes[i]
         end
 
         bytes = int2bytes(yaw, 2)
         for i = 1, #bytes do
-            frame2[#frame2 + 1] = bytes[i]
+            frame[#frame + 1] = bytes[i]
         end
 
-        serialWriteCrossfire(0x1E, frame2)
+        serialWriteCrossfire(0x1E, frame)
     end
 
-    --[[local str = serialRead()
+    local str = serialRead()
     if str then
-        local bytes = string.byte(str, 1, #str)
-        for i = 1, #bytes do
-            if readCrossfire(bytes[i]) then
+        for i = 1, #str do
+            if readCrossfire(string.byte(str, i)) then
                 local t = {}
                 for j = 4, #CrossfirePacket - 1 do
                     t[j - 3] = CrossfirePacket[j]
@@ -243,7 +242,7 @@ local function run()
                 crossfireTelemetryPush(CrossfirePacket[3], t)
             end
         end
-    end]]
+    end
 end
 
 return {run=run}

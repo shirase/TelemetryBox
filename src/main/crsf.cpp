@@ -121,7 +121,7 @@ void crsfParse()
     {
     case CRSF_FRAMETYPE_MSP_RESP:
         {
-            //Serial.write("CRSF_FRAMETYPE_MSP_RESP");
+            Serial.write("CRSF_FRAMETYPE_MSP_RESP");
 
             uint8_t *mspStart = crsfFrame.frame.payload + CRSF_FRAME_PAYLOAD_EXT_HEADER_SIZE;
             const uint8_t mspHeader = *mspStart;
