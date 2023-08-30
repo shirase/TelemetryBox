@@ -60,7 +60,7 @@ void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
         p++; // U8 Is current mission valid
         uint8_t waypointsCount = payload[p++]; // U8 Number of waypoints in current mission
 
-        mavlinkWaypointsCount(waypointsCount);
+        mavlinkWaypointsCount(waypointsCount+1);
     } else
     if (cmd == MSP_WP) {
         uint8_t p = 0;
@@ -86,7 +86,7 @@ void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
         // U16 P3
         // U8 flags
 
-        mavlinkWP(wp_no, action, lat, lon, alt);
+        mavlinkWP(wp_no+1, action, lat, lon, alt);
     } 
     else {
         Serial.write(cmd);

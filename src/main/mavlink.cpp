@@ -124,7 +124,7 @@ bool handleIncoming_MISSION_REQUEST(void)
     mavlink_msg_mission_request_decode(&mavRecvMsg, &msg);
 
     if (msg.target_system == system_id) {
-        getWaypoint(msg.seq + 1);
+        getWaypoint(msg.seq);
         return true;
     }
 
