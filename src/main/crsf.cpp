@@ -19,6 +19,7 @@
 #define TELEMETRY_MSP_VER_MASK   (0x7 << TELEMETRY_MSP_VER_SHIFT)
 #define TELEMETRY_MSP_SEQ_MASK   0x0F
 #define TELEMETRY_MSP_START_FLAG (1 << 4)
+#define TELEMETRY_MSP_ERROR_FLAG (1 << 5)
 
 serial_port_t crsfPort = {};
 
@@ -139,7 +140,18 @@ void crsfParse()
                 if (version == TELEMETRY_MSP_VERSION_2) { // todo
                     mspPayloadSize = (mspStart[0] | (mspStart[1] << 8));
                     cmd = (mspStart[2] | (mspStart[3] << 8));
+                    if (mspHeader & TELEMETRY_MSP_ERROR_FLAG) {
+                        Serial.write("MSP_ERROR_V2");
+                        Serial.write(&mspStart[2], mspPayloadSize);
+                        break;
+                    }
                 } else {
+                    if (mspHeader & TELEMETRY_MSP_ERROR_FLAG) {
+                        Serial.write("MSP_ERROR");
+                        Serial.write(&mspStart[1], mspStart[0]);
+                        break;
+                    }
+
                     mspPayloadSize = mspStart[0];
                     uint8_t mspSize = mspPayloadSize + 2; // payload size + size byte + crc byte
 
