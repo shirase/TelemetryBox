@@ -54,7 +54,7 @@ bool getWaypointCount()
 void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
 {
     if (cmd == MSP_WP_GETINFO) {
-        uint8_t p = 0; // U8 MSP Size
+        uint8_t p = 0;
         p++; // U8 Reserved for waypoint capabilities
         p++; // U8 Maximum number of waypoints supported
         p++; // U8 Is current mission valid
@@ -63,7 +63,7 @@ void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
         mavlinkWaypointsCount(waypointsCount);
     } else
     if (cmd == MSP_WP) {
-        uint8_t p = 0; // U8 MSP Size
+        uint8_t p = 0;
         uint8_t wp_no = payload[p++]; // U8 wp_no
         uint8_t action = payload[p++]; // U8 action (WAYPOINT)
         uint32_t lat = 0; // U32 lat
@@ -87,6 +87,9 @@ void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
         // U8 flags
 
         mavlinkWP(wp_no, action, lat, lon, alt);
+    } 
+    else {
+        Serial.write(cmd);
     }
 }
 

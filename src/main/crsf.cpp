@@ -123,7 +123,7 @@ void crsfParse()
     {
     case CRSF_FRAMETYPE_MSP_RESP:
         {
-            Serial.write("CRSF_FRAMETYPE_MSP_RESP");
+            //Serial.write("CRSF_FRAMETYPE_MSP_RESP");
 
             uint8_t *mspStart = crsfFrame.frame.payload + CRSF_FRAME_PAYLOAD_EXT_HEADER_SIZE;
             const uint8_t mspHeader = *mspStart;
@@ -151,7 +151,7 @@ void crsfParse()
             }
 
             if (mspPayloadSize <= mspFramePayloadSize) {
-                mspParse(cmd, mspStart, mspPayloadSize);
+                mspParse(cmd, mspStart + 1 /* first byte is msp payload size */, mspPayloadSize);
             } else {
                 // frame sequence, todo
             }
@@ -308,6 +308,7 @@ void sendMspPacket(mspPacket_t *packet)
 {
     if (packet->function >= 0xFF) {
         // MSP V2 not supported by CRSF telemetry
+        Serial.write("MSP V2 not supported by CRSF telemetry");
         return;
     }
 

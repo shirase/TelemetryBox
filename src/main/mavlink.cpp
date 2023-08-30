@@ -131,21 +131,36 @@ bool handleIncoming_MISSION_REQUEST(void)
     return false;
 }
 
+bool handleIncoming_MISSION_ACK(void)
+{
+    mavlink_mission_ack_t msg;
+    mavlink_msg_mission_ack_decode(&mavRecvMsg, &msg);
+
+    if (msg.target_system == system_id) {
+        mavlink_msg_mission_ack_pack(system_id, component_id, &mavSendMsg, mavRecvMsg.sysid, mavRecvMsg.compid, MAV_MISSION_ACCEPTED, MAV_MISSION_TYPE_MISSION);
+        mavlinkSendMessage();
+        return true;
+    }
+
+    return false;
+}
+
+bool handleIncoming_STATUSTEXT(void)
+{
+    mavlink_statustext_t msg;
+    mavlink_msg_statustext_decode(&mavRecvMsg, &msg);
+
+    Serial.write(msg.text, sizeof(msg.text));
+
+    return true;
+}
+
 void mavlinkReadByte(uint8_t byte)
 {
     //Serial.write(byte);
     uint8_t result = mavlink_parse_char(0, byte, &mavRecvMsg, &mavRecvStatus);
     if (result == MAVLINK_FRAMING_OK) {
-        /*uint32_t msgid = mavRecvMsg.msgid;
-        if (msgid != MAVLINK_MSG_ID_HEARTBEAT) {
-            uint8_t buf[128];
-            uint8_t buf_s = snprintf((char*)buf, sizeof buf, "%i ", msgid);
-            Serial.write(buf, buf_s);
-        }*/
-        
         switch (mavRecvMsg.msgid) {
-            case MAVLINK_MSG_ID_HEARTBEAT:
-                break;
             case MAVLINK_MSG_ID_MISSION_CLEAR_ALL:
                 handleIncoming_MISSION_CLEAR_ALL();
                 break;
@@ -161,9 +176,28 @@ void mavlinkReadByte(uint8_t byte)
             case MAVLINK_MSG_ID_MISSION_REQUEST:
                 handleIncoming_MISSION_REQUEST();
                 break;
-            case MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE:
+            case MAVLINK_MSG_ID_MISSION_ACK:
+                handleIncoming_MISSION_ACK();
                 break;
+
+            case MAVLINK_MSG_ID_STATUSTEXT:
+                handleIncoming_STATUSTEXT();
+                break;
+                
+            case MAVLINK_MSG_ID_HEARTBEAT:
+            case MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE:
+            case MAVLINK_MSG_ID_REQUEST_DATA_STREAM:
+            case MAVLINK_MSG_ID_COMMAND_LONG:
+            case MAVLINK_MSG_ID_PARAM_REQUEST_LIST:
+                break;
+
             default:
+                {
+                    uint32_t msgid = mavRecvMsg.msgid;
+                    uint8_t buf[128];
+                    uint8_t buf_s = snprintf((char*)buf, sizeof buf, "%i ", msgid);
+                    Serial.write(buf, buf_s);
+                }
                 break;
         }
     }
