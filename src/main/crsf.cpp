@@ -348,13 +348,16 @@ void sendMspPacket(mspPacket_t *packet)
             while (mspFrameRemaining > 0) {
                 mspFrameRemaining--;
                 // copy packet payload into outBuffer
-                outBuffer[outBufferOffset++] = packet->payload[payloadOffset++];
-                if (payloadOffset == packet->payloadSize) {
+                if (payloadOffset < packet->payloadSize) {
+                    outBuffer[outBufferOffset++] = packet->payload[payloadOffset++];
+                }
+                if (payloadOffset == packet->payloadSize && mspFrameRemaining > 0) {
                     // add MSP crc
                     uint8_t crc = 0;
                     crc = CalcCRCMsp((uint8_t *)&packet->payloadSize, 1, crc);
                     crc = CalcCRCMsp((uint8_t *)&packet->function, 1, crc);
                     outBuffer[outBufferOffset++] = CalcCRCMsp(packet->payload, packet->payloadSize, crc);
+                    payloadOffset++;
                     break;
                 }
             }
