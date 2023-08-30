@@ -150,7 +150,7 @@ bool handleIncoming_STATUSTEXT(void)
     mavlink_statustext_t msg;
     mavlink_msg_statustext_decode(&mavRecvMsg, &msg);
 
-    Serial.write(msg.text, sizeof(msg.text));
+    //Serial.write(msg.text, sizeof(msg.text));
 
     return true;
 }
@@ -192,12 +192,12 @@ void mavlinkReadByte(uint8_t byte)
                 break;
 
             default:
-                {
+                /*{
                     uint32_t msgid = mavRecvMsg.msgid;
                     uint8_t buf[128];
                     uint8_t buf_s = snprintf((char*)buf, sizeof buf, "%i ", msgid);
-                    Serial.write(buf, buf_s);
-                }
+                    //Serial.write(buf, buf_s);
+                }*/
                 break;
         }
     }
