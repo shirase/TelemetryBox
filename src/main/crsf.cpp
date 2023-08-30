@@ -166,6 +166,7 @@ void crsfParse()
                 mspParse(cmd, mspStart + 1 /* first byte is msp payload size */, mspPayloadSize);
             } else {
                 // frame sequence, todo
+                Serial.write("MSP frame sequence");
             }
         }
 
