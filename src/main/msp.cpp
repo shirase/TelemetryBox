@@ -96,8 +96,6 @@ void mspParse(uint16_t cmd, uint8_t *payload, uint16_t payloadSize)
 void mspTask(void * parameter)
 {
     for( ;; ) {
-        //getWaypointCount();
-        
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
